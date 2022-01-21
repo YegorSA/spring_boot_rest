@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="../../static/main.js" th:src="@{../static/main.js}"></script>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark text-white bg-dark">
+    <div class="container-fluid">
+        <span class="font-weight-bold" sec:authentication="name">Username/email</span>
+        <span>&nbsp;with roles:&nbsp;</span>
+        <th:block th:each="r, iter:${#authentication.getAuthorities()}">
+            <span th:text="*{r.getAuthority().replace('ROLE_', '')}"></span>
+            <th:block th:if="${!iter.last}">,&nbsp</th:block>
+        </th:block>
+        <a class="nav-link ml-auto navbar-text" href="/logout">Logout</a>
+    </div>
+</nav>
+<div class="container-fluid" style="margin-top:10px">
+    <div class="row">
+        <div class="col-2 bg-white">
+            <ul class="nav nav-pills flex-column" id="roles-tab" role="tablist" aria-orientation="vertical">
+                <li class="nav-item">
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" th:classappend="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? 'active'" id="admin-panel-tab" data-toggle="pill" href="#admin-panel" role="tab" aria-controls="admin-panel" aria-selected="true">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? 'active'" id="user-information-tab" data-toggle="pill" href="#user-information" role="tab" aria-controls="user-information" aria-selected="false">User</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <div class="tab-content" id="roles-tabContent">
+                <div class="tab-pane container-fluid active" id="user-information" role="tabpanel" aria-labelledby="user-information-tab">
+                    <h2 class="m-3">User information page</h2>
+                    <div class="container-fluid border m-3">
+                        <div class="row" style="background-color:WhiteSmoke;">
+                            <h5 class="m-3">About user</h5>
+                        </div>
+                        <div class="row">
+                            <div class="container-fluid bg-white align-items: center p-3">
+                                <table class="table table-striped w-100 m-2">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">First Name</th>
+                                        <th scope="col">Last Name</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Role</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:block th:object="${user}">
+                                        <td th:utext="*{id}">ID</td>
+                                        <td th:utext="*{firstname}">First Name</td>
+                                        <td th:utext="*{lastname}">Last Name</td>
+                                        <td th:utext="*{age}">Age</td>
+                                        <td th:utext="*{email}">Email</td>
+                                        <td><span th:each="userRole : *{roles}" th:utext="${userRole.name.replace('ROLE_', '')} + ' '"></span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
