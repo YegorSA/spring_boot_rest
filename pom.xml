@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.java-mentor</groupId>
-    <artifactId>spring_boot_crud</artifactId>
+    <artifactId>spring_boot_rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>spring_boot_crud</name>
-    <description>spring_boot_crud</description>
+    <name>spring_boot_rest</name>
+    <description>spring_boot_rest</description>
     <properties>
         <java.version>11</java.version>
     </properties>

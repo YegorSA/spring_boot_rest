@@ -22,7 +22,7 @@ public interface UserService extends UserDetailsService {
 
     void create(User user);
 
-    void update(User user);
+    User update(User user);
 
     void deleteById(long entityId);
 }
