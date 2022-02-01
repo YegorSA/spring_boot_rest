@@ -39,17 +39,6 @@ public class User implements UserDetails {
     @Max(value = 127, message = "Age should not be greater than 127")
     private Integer age;
 
-    // Not used in this task
-    @Transient
-    //@Column(name = "username", unique = true)
-    //@NotEmpty(message = "Username should not be empty")
-    private String username;
-
-    // Not used in this task
-    @Transient
-    //@Column(name = "enabled",nullable = false, columnDefinition = "TINYINT", length = 1/*"boolean default true"*/)
-    private boolean enabled;
-
     @Column(name = "email", unique = true)
     @Email(message = "Email should be valid")
     @NotEmpty(message = "Email should not be empty")
@@ -65,14 +54,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(long id, String firstname, String lastname, String password, int age, String username, boolean enabled, String email, Set<Role> roles) {
+    public User(long id, String firstname, String lastname, String password, int age, String email, Set<Role> roles) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.password = password;
         this.age = age;
-        this.username = username;
-        this.enabled = enabled;
         this.email = email;
         this.roles = roles;
     }
@@ -93,9 +80,7 @@ public class User implements UserDetails {
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", password='" + password + '\'' +
-                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", enabled=" + enabled +
                 ", roles=" + roles +
                 '}';
     }
@@ -112,7 +97,6 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        //return username;
         return email;
     }
 
@@ -133,7 +117,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return true;
     }
 
     public long getId() {
@@ -172,20 +156,12 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     public Set<Role> getRoles() {

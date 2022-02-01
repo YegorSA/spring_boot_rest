@@ -1,8 +1,6 @@
 package ru.javamentor.spring_boot_crud.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.javamentor.spring_boot_crud.model.Role;
 import ru.javamentor.spring_boot_crud.model.User;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-//@Controller
 @RequestMapping(path = "/admin")
 public class AdminController {
 
@@ -28,13 +25,8 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public List<User> showUsers(/*ModelMap model, Principal principal*/) {
-//        model.addAttribute("allUsers", userService.findAll());
-//        model.addAttribute("currentUser", userService.findByEmail(principal.getName()));
-//        model.addAttribute("allRoles", roleService.findAll());
-//        model.addAttribute("newUser", new User());
+    public List<User> showUsers() {
         return userService.findAll();
-
     }
 
     @GetMapping("/roles")
@@ -42,39 +34,29 @@ public class AdminController {
         return roleService.findAll();
     }
 
-    @GetMapping("/users/:{id}")
+    @GetMapping("/users/current")
+    public User getCurrentUser(Principal principal) {
+        return userService.findByEmail(principal.getName());
+    }
+
+    @GetMapping("/:{id}")
     public User findUser(@PathVariable("id") Long id) {
         return userService.getUserById(id);
     }
 
-/*    @GetMapping
-    public String loadAdminPage(ModelMap model, Principal principal) {
-        model.addAttribute("allUsers", userService.findAll());
-        model.addAttribute("currentUser", userService.findByEmail(principal.getName()));
-        model.addAttribute("allRoles", roleService.findAll());
-//        model.addAttribute("newUser", new User());
-        return "adminPage";
-    }*/
-
-    @PostMapping("/create")
-    public String create(@ModelAttribute("user") User user) {
-        userService.create(user);
-        return "redirect:/admin/";
+    @PostMapping
+    public User create(@RequestBody User user) {
+        return userService.create(user);
     }
 
-    @PostMapping("/edit")
-    @ResponseBody
+    @PatchMapping("/:{id}")
     public User update(@RequestBody User user) {
-        System.out.println(user);
-        user.getRoles().stream().map(Role::toString).forEach(System.out::println);
-        //userService.update(user);
         return userService.update(user);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") long id) {
+    @DeleteMapping("/:{id}")
+    public void delete(@PathVariable("id") long id) {
         userService.deleteById(id);
-        return "redirect:/admin";
     }
 
 }

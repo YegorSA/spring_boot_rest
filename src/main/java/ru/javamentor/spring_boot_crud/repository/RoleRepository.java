@@ -6,5 +6,6 @@ import ru.javamentor.spring_boot_crud.model.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
+
     Role findByName(String roleName);
 }

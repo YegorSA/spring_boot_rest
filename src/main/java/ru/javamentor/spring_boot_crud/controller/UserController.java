@@ -35,10 +35,7 @@ public class UserController {
 
 	@GetMapping("/admin")
 	public String loadAdminPage(ModelMap model, Principal principal) {
-		//model.addAttribute("allUsers", userService.findAll());
 		model.addAttribute("currentUser", userService.findByEmail(principal.getName()));
-		//model.addAttribute("allRoles", roleService.findAll());
-        //model.addAttribute("newUser", new User());
 		return "admin/adminPage";
 	}
 
@@ -57,6 +54,4 @@ public class UserController {
 			return "user/accessDeniedPage";
 		}
 	}
-
-
 }

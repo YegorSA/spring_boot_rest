@@ -14,13 +14,11 @@ public interface UserService extends UserDetailsService {
 
     User getUserById(long id);
 
-    //User findByUsername(String username);
-
     User findByEmail(String email);
 
     List<User> findAll();
 
-    void create(User user);
+    User create(User user);
 
     User update(User user);
 
