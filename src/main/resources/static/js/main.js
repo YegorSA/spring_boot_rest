@@ -19,7 +19,6 @@ $(document).ready(function () {
 
     $('#newUserForm').on('submit', submitNewUserForm)
 
-    alert("page refreshed")
 });
 
 async function loadRoles() {
@@ -42,7 +41,7 @@ async function loadCurrentUser() {
 
     if (response.status === 200) {
         currentUser = await response.json()
-        fillCurrentUserInfo()
+        await fillCurrentUserInfo()
     } else {
         console.log(response.statusText)
     }
@@ -129,7 +128,7 @@ async function fillEditModal(event) {
     $('#edit-user-email').val(($(this).closest('tr').find("td:eq(4)").text()))
     $('#edit-user-password').empty()
     $('#edit-user-roles').empty()
-    for (role of allRoles) {
+    for (let role of allRoles) {
         let selectedStatus = $(this).closest('tr').find("td:eq(5)").text().includes(role.name.substring(5)) ? 'selected' : ''
         $('#edit-user-roles').append('<option value=\'' + role.id + '\'' + selectedStatus + '>' + role.name.substring(5) + '</option>')
     }
@@ -182,7 +181,7 @@ async function submitEditForm(event) {
 
     $('#editModal').modal('hide')
 
-    fillUserTable()
+    await fillUserTable()
 
 }
 
@@ -197,7 +196,7 @@ async function fillDeleteModal(event) {
     $('#delete-user-email').val(($(this).closest('tr').find("td:eq(4)").text()))
     $('#delete-user-password').empty()
     $('#delete-user-roles').empty()
-    for (role of allRoles) {
+    for (let role of allRoles) {
         let selectedStatus = $(this).closest('tr').find("td:eq(5)").text().includes(role.name.substring(5)) ? 'selected' : ''
         $('#delete-user-roles').append('<option value=\'' + role.id + '\'' + selectedStatus + '>' + role.name.substring(5) + '</option>')
     }
@@ -223,7 +222,7 @@ async function submitDeleteForm(event) {
 
     $('#deleteModal').modal('hide')
 
-    fillUserTable()
+    await fillUserTable()
 }
 
 async function submitNewUserForm(event) {
@@ -270,5 +269,5 @@ async function submitNewUserForm(event) {
 
     $('a[href="#usersList"]').trigger('click')
 
-    fillUserTable()
+    await fillUserTable()
 }

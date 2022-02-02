@@ -1,6 +1,7 @@
 package ru.javamentor.spring_boot_crud.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.javamentor.spring_boot_crud.model.Role;
 import ru.javamentor.spring_boot_crud.model.User;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping(path = "/admin")
 public class AdminRestController {
 
