@@ -38,7 +38,7 @@ async function loadRoles() {
 
 async function loadCurrentUser() {
 
-    const response = await fetch("http://localhost:8080/admin/users/current")
+    const response = await fetch("http://localhost:8080/user/current")
 
     if (response.status === 200) {
         currentUser = await response.json()
@@ -140,7 +140,7 @@ async function submitEditForm(event) {
 
     event.preventDefault()
 
-    const url = 'http://localhost:8080/admin/:' + document.getElementById("edit-user-id").value
+    const url = 'http://localhost:8080/admin/users/:' + document.getElementById("edit-user-id").value
 
     let roleList = () => {
         let array = []
@@ -210,7 +210,7 @@ async function submitDeleteForm(event) {
 
     event.preventDefault()
 
-    const url = 'http://localhost:8080/admin/:' + document.getElementById("delete-user-id").value
+    const url = 'http://localhost:8080/admin/users/:' + document.getElementById("delete-user-id").value
 
     try {
         const response = await fetch(url, {
@@ -230,7 +230,7 @@ async function submitNewUserForm(event) {
 
     event.preventDefault()
 
-    const url = 'http://localhost:8080/admin/'
+    const url = 'http://localhost:8080/admin/users'
 
     let roleList = () => {
         let array = []

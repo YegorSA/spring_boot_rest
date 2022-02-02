@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
@@ -18,34 +17,34 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
-    <script src="../../static/js/main.js" th:src="@{../../static/js/main.js}"></script>
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark text-white bg-dark">
-    <div class="container-fluid">
-        <span class="font-weight-bold" sec:authentication="name">Username/email</span>
-        <span>&nbsp;with roles:&nbsp;</span>
-        <th:block th:each="r, iter:${#authentication.getAuthorities()}">
-            <span th:text="*{r.getAuthority().replace('ROLE_', '')}"></span>
-            <th:block th:if="${!iter.last}">,&nbsp</th:block>
-        </th:block>
+    <div class="container-fluid" id="topNavbar">
+        <div id="topNavbarUserInfo"></div>
         <a class="nav-link ml-auto navbar-text" href="/logout">Logout</a>
     </div>
 </nav>
 <div class="container-fluid" style="margin-top:10px">
     <div class="row">
+        <!--
+                    Left nav panel
+        -->
         <div class="col-2 bg-white">
             <ul class="nav nav-pills flex-column" id="roles-tab" role="tablist" aria-orientation="vertical">
                 <li class="nav-item">
-                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" th:classappend="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? 'active'" id="admin-panel-tab" data-toggle="pill" href="#admin-panel" role="tab" aria-controls="admin-panel" aria-selected="true">Admin</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? 'active'" id="user-information-tab" data-toggle="pill" href="#user-information" role="tab" aria-controls="user-information" aria-selected="false">User</a>
+                    <a class="nav-link active" id="user-information-tab" data-toggle="pill" href="#user-information" role="tab" aria-controls="user-information" aria-selected="false">User</a>
                 </li>
             </ul>
         </div>
+<!--
+        Left nav panel content
+-->
         <div class="col-10">
             <div class="tab-content" id="roles-tabContent">
+<!--
+                Logged in user info
+-->
                 <div class="tab-pane container-fluid active" id="user-information" role="tabpanel" aria-labelledby="user-information-tab">
                     <h2 class="m-3">User information page</h2>
                     <div class="container-fluid border m-3">
@@ -54,7 +53,7 @@
                         </div>
                         <div class="row">
                             <div class="container-fluid bg-white align-items: center p-3">
-                                <table class="table table-striped w-100 m-2">
+                                <table class="table table-striped w-100 m-2" id="currentUserTable">
                                     <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -65,25 +64,68 @@
                                         <th scope="col">Role</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr th:block th:object="${user}">
-                                        <td th:utext="*{id}">ID</td>
-                                        <td th:utext="*{firstname}">First Name</td>
-                                        <td th:utext="*{lastname}">Last Name</td>
-                                        <td th:utext="*{age}">Age</td>
-                                        <td th:utext="*{email}">Email</td>
-                                        <td><span th:each="userRole : *{roles}" th:utext="${userRole.name.replace('ROLE_', '')} + ' '"></span></td>
-                                    </tr>
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    let currentUser
+
+    $(document).ready(function () {
+
+        loadCurrentUser()
+
+        fillCurrentUserInfo()
+    });
+    async function loadCurrentUser() {
+
+        const response = await fetch("http://localhost:8080/user/current")
+
+        if (response.status === 200) {
+            currentUser = await response.json()
+            fillCurrentUserInfo()
+        } else {
+            console.log(response.statusText)
+        }
+    }
+    async function fillCurrentUserInfo() {
+
+        (function fillCurrentUserTable(){
+
+            let temp = '';
+            temp += '<tr>';
+            temp += '<td>' + currentUser.id + '</td>';
+            temp += '<td>' + currentUser.firstname + '</td>';
+            temp += '<td>' + currentUser.lastname + '</td>';
+            temp += '<td>' + currentUser.age + '</td>';
+            temp += '<td>' + currentUser.email + '</td>';
+            temp += '<td>';
+            for (let role of currentUser.roles) {
+                temp += role.name.substring(5) + ' '
+            }
+            temp += '</tr>'
+
+            document.getElementById('currentUserTable').tBodies[0].innerHTML = temp}());
+
+        (function fillTopNavbar(){
+            let temp =""
+            temp += '<span> '
+            temp += currentUser.email + ' with roles: '
+            for (let role of currentUser.roles) {
+                temp += role.name.substring(5) + ', '
+            }
+            temp = temp.slice(0, -2) + '</span>'
+
+            $('#topNavbarUserInfo').empty().append(temp)
+        }());
+    }
+
+</script>
 </body>
 </html>
