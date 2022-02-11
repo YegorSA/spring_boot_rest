@@ -16,4 +16,9 @@ public class CommonController {
     public String logout() {
         return "common/login";
     }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String directToLogin() {
+        return "redirect:/login";
+    }
 }

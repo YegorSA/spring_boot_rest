@@ -11,11 +11,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.javamentor.spring_boot_crud.security.handler.LoginSuccessHandler;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableOAuth2Client
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -26,6 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
+
+//    @Bean
+//    PrincipalExtractor principalExtractor(UserDetailsService userDetailsService) {
+//        return map -> { map.size()
+//
+//        }
+//    }
 
     @Bean
     public AuthenticationProvider authProvider() {
@@ -56,6 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // даем доступ к форме логина всем
                 .permitAll();
 
+        http.oauth2Login()
+                .loginPage("/login")
+                .defaultSuccessUrl("/user");
 
         http.logout()
                 // разрешаем делать логаут всем
@@ -71,8 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // делаем страницу регистрации недоступной для авторизированных пользователей
                 .authorizeRequests()
                 //страницы аутентификаци доступна всем
+                .antMatchers("/js/**", "/oauth/**").permitAll()
                 .antMatchers("/login").anonymous()
-                .antMatchers("/js/**").permitAll()
                 // защищенные URL
                 .antMatchers("/admin/**").access("hasAnyRole('ADMIN')")
                 .antMatchers("/user/**").access("hasAnyRole('USER', 'ADMIN')");
